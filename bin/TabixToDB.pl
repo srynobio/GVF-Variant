@@ -41,7 +41,7 @@ GetOptions(
 ) || die $usage;
 
 # db handle.
-my $dbxh = GVF::DB::Variant->connect( 'dbi:mysql:GVF_DB_Variant', 'srynearson', 'sh@wnPAss')|| die "Can't connect to db\n";
+my $dbxh = GVF::DB::Variant->connect( 'dbi:mysql:GVF_DB_Variant', 'username', 'password')|| die "Can't connect to db\n";
 
 # object and vars.
 my $tab = Tabix->new(-data => $input) || die "Please input Tabix file $usage\n";

@@ -31,7 +31,7 @@ my $gvf_out = IO::File->new('../data/Cosmic.gvf', 'w')
     || die "Can't open file to write to $!\n";
 
 # handle to connect to db.
-my $dbxh = GVF::DB::Variant->connect( 'dbi:mysql:GVF_DB_Variant', 'srynearson', 'sh@wnPAss');
+my $dbxh = GVF::DB::Variant->connect( 'dbi:mysql:GVF_DB_Variant', 'username', 'password');
 
 # header.    
 print $gvf_out "##gvf-version 1.06\n##Cosmic\n\n";

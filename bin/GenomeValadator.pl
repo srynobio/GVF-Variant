@@ -21,7 +21,7 @@ my $file  = $ARGV[1];
 my $fileIO = IO::File->new( $file, 'r');
 
 # db handle and indexing fasta file.
-my $dbxh = GVF::DB::Variant->connect( 'dbi:mysql:GVF_DB_Variant', 'srynearson', 'sh@wnPAss')|| die "Can't connect to db\n";
+my $dbxh = GVF::DB::Variant->connect( 'dbi:mysql:GVF_DB_Variant', 'username', 'password')|| die "Can't connect to db\n";
 my $db   = Bio::DB::Fasta->new( $FastaInput, -debug=>1 ) || die "Please enter fasta file\n";
 
 

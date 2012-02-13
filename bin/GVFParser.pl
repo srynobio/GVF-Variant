@@ -1,13 +1,16 @@
 #!/usr/bin/perl
 use warnings;
 use strict;
-use lib '/home/srynearson/GVF_DB_Variant/lib';
+use lib '/home/srynearson/GVF_DB_Variant/lib'; 
 use Utils;
 use GVF_DB_Connect;
 use GVF::DB::Variant;
 use IO::File;
+use Carp;
 use Getopt::Long;
 use Data::Dumper;
+
+#our ($VERSION) = '$Revision: 1 $' =~ m{ \$Revision: \s+ (\S+) }x;
 
 # Script by Shawn Rynearson For Karen Eilbeck
 # shawn.rynearson@gmail.com
@@ -34,7 +37,7 @@ OPTIONS(required):
 \n";
 
 my ($all, $data);
-my $input = $ARGV[1] || die $usage;
+my $input = $ARGV[1] || croak $usage;
  
 GetOptions( 
 
@@ -45,20 +48,20 @@ GetOptions(
 
 
 #I/O
-my $GVF_FILE = IO::File->new( $input, 'r') || die "Could not open GVF file $usage\n";
+my $GVF_FILE = IO::File->new( $input, 'r') || croak "Could not open GVF file $usage\n";
 
 # handle to connect to db.
-my $dbxh = GVF::DB::Variant->connect( 'dbi:mysql:GVF_DB_Variant', 'srynearson', 'sh@wnPAss');
+my $dbxh = GVF::DB::Variant->connect( 'dbi:mysql:GVF_DB_Variant', 'username', 'password');
 
 # Where the magic happens.
 my (@meta, @gvf);
-foreach my $line ( <$GVF_FILE> ){
+while ( my $line ( <$GVF_FILE> ) ) {
 	chomp $line;
-
-	if ($line =~ /^#/) {
+	
+	if ($line =~ /^#/sxm) {
                push @meta, $line;	
 	}
-	elsif ($line =~ /^chr/){
+	elsif ($line =~ /^chr/sxm){
 		push @gvf, $line;
 	}
 }
@@ -74,13 +77,12 @@ my $parsed_gvf = parse_gvf(\@gvf);
 if ($all) {
 	individual($dbxh, $parsed_meta, $parsed_gvf);
 	variant($dbxh, $parsed_gvf);
-	system ("./TabixToDB.pl -thousand ../tabix/ThousandGenome.gz");
+	system './TabixToDB.pl -thousand ../tabix/ThousandGenome.gz';
 	genome_scope($dbxh, $parsed_meta );
 	genome_variant_relation($dbxh);
 	variant_effect($dbxh, $parsed_gvf);
 	individual_phenotype($dbxh, $parsed_meta);
-	system ("./TabixToDB.pl -cosmic ../tabix/Cosmic.gz");
-	variant_stat($dbxh, $parsed_gvf);
+	system './TabixToDB.pl -cosmic ../tabix/Cosmic.gz';
 }
 
 if ($data) {
